@@ -15,30 +15,45 @@
     "build": "qwik build",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
+    "build.server": "vite build -c adapters/cloudflare-pages/vite.config.ts",
     "build.types": "tsc --incremental --noEmit",
-    "deploy": "echo 'Run \"npm run qwik add\" to install a server adapter'",
+    "deploy": "wrangler pages deploy ./dist",
     "dev": "vite --mode ssr",
     "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
     "preview": "qwik build preview && vite preview --open",
+    "serve": "wrangler pages dev ./dist --compatibility-flags=nodejs_als",
     "start": "vite --open --mode ssr",
-    "qwik": "qwik"
+    "qwik": "qwik",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply d1-demo-prod-db --local",
+    "db:migrate:prod": "wrangler d1 migrations apply d1-demo-prod-db --remote",
+    "db:migrate:preview": "wrangler d1 migrations apply --env preview d1-demo-preview-db --remote",
+    "db:studio:local": "powershell -Command \"$env:LOCAL_DB_PATH = (Get-ChildItem -Path .wrangler/state/v3/d1/miniflare-D1DatabaseObject -Filter *.sqlite -Recurse | Select-Object -First 1).FullName; drizzle-kit studio\"",
+    "db:studio:preview": "powershell -Command \"$env:DB_ID='yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'; $env:D1_TOKEN=(Get-Content .drizzle.env | Select-String 'D1_TOKEN=(.*)').Matches.Groups[1].Value; $env:CF_ACCOUNT_ID=(Get-Content .drizzle.env | Select-String 'CF_ACCOUNT_ID=(.*)').Matches.Groups[1].Value; drizzle-kit studio\"",
+    "db:studio:prod": "powershell -Command \"$env:DB_ID='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'; $env:D1_TOKEN=(Get-Content .drizzle.env | Select-String 'D1_TOKEN=(.*)').Matches.Groups[1].Value; $env:CF_ACCOUNT_ID=(Get-Content .drizzle.env | Select-String 'CF_ACCOUNT_ID=(.*)').Matches.Groups[1].Value; drizzle-kit studio\""
   },
   "devDependencies": {
     "@builder.io/qwik": "^1.8.0",
     "@builder.io/qwik-city": "^1.8.0",
     "@types/eslint": "8.56.10",
-    "@types/node": "20.14.11",
+    "@types/node": "^20.15.0",
     "@typescript-eslint/eslint-plugin": "7.16.1",
     "@typescript-eslint/parser": "7.16.1",
+    "better-sqlite3": "^11.1.2",
+    "drizzle-kit": "^0.24.0",
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "^1.8.0",
     "prettier": "3.3.3",
     "typescript": "5.4.5",
     "undici": "*",
     "vite": "5.3.5",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.33.0"
   }
 }
