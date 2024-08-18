@@ -1,10 +1,12 @@
-# Qwik City App ⚡️
+# Qwik City App + Cloudflare D1 with Drizzle ORM ⚡️
 
 - [Qwik Docs](https://qwik.dev/)
 - [Discord](https://qwik.dev/chat)
 - [Qwik GitHub](https://github.com/QwikDev/qwik)
 - [@QwikDev](https://twitter.com/QwikDev)
 - [Vite](https://vitejs.dev/)
+- [Cloudflare Docs](https://developers.cloudflare.com/d1/get-started/)
+- [Drizzle Docs](https://developers.cloudflare.com/d1/get-started/)
 
 ---
 
@@ -37,6 +39,46 @@ Use the `npm run qwik add` command to add additional integrations. Some examples
 ```shell
 npm run qwik add # or `yarn qwik add`
 ```
+
+## Cloudflare
+
+> Refrence: [Cloudflare Wrangler CLI commands](https://developers.cloudflare.com/workers/wrangler/commands/)
+
+```shell
+npm run qwik add cloudflare-pages # or `yarn qwik add cloudflare-pages`
+```
+
+As of writing this `8/17/2024` the latest cloudflare version is `3.72.0`. When running the above command it installs wrangler 3.0.0 to package.json
+
+You will need an active cloudflare account this would be a good time to make one or login to your existing account in your web browser, you will be redirected to the browser to confirm your login from wrangler cli after running the following command.
+
+```shell
+npx wrangler login
+```
+
+You will need to have an active D1 database if you do not have one yet run the following wrangler cli command, feel free to change the name ("d1-prod-db") to anything you would like.
+
+```shell
+npx wrangler d1 create d1-prod-db
+```
+
+for the purposes of this demo we will make a second one using the same command for cloudflare preview deployments.
+
+```shell
+npx wrangler d1 create d1-preview-db
+```
+
+You can create a wrangler.toml file if you would like, you will need to copy the output of the previous two `d1 create` and paste that into the wrangler.toml file (see refrence below), or you can use wrangler cli command to generate a wrangler.toml file your current bindings by running the following command
+
+> refrence: [Cloudflare sample wrangler.toml configuration](https://developers.cloudflare.com/workers/wrangler/configuration/#sample-wranglertoml-configuration)
+
+```shell
+npx wrangler pages download config <YOUR CLOUDFLARE PAGES PROJECT NAME>
+```
+
+
+
+## Drizzle
 
 ## Development
 
