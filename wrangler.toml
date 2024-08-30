@@ -3,12 +3,12 @@ name = "qwik-cloudflare-d1-drizzle"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-08-18"
 
-[[d1_databases]]
+[[env.preview.d1_databases]] # added env.preview.
 database_id = "03aa26ab-e8b1-4468-8244-9e14f3d95faf"
 binding = "DB"
 database_name = "db-preview-d1"
 
-[[env.production.d1_databases]]
+[[d1_databases]] # removed env.production.
 database_id = "9eeb278f-aba5-4624-9148-03453a76cdec"
 binding = "DB"
 database_name = "db-prod-d1"

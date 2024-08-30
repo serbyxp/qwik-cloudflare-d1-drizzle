@@ -44,10 +44,15 @@ npm install -D @cloudflare/workers-types
 
 > This usually adds them globally no need to include them anywhere, unless something is different with your tsconfig, and or if you want to specify a specific compatibility date.
 
+code: tsconfig.json
+
 ```json
+// ./tsconfig.json
+  ...
     "types": [
         "@cloudflare/workers-types/2024-0-01" // remove the date or adjust it to match the compatibility date in your projects wrangler.toml as mentioned this usually doesn't need to be added it just works when you install the types package.
     ]
+  ...
 ```
 
 You will need an active cloudflare account this would be a good time to make one or login to your existing account in your web browser, you will be redirected to the browser to confirm your login from wrangler cli after running the following command.
@@ -75,7 +80,7 @@ References:
 - [Cloudflare sample wrangler.toml configuration](https://developers.cloudflare.com/workers/wrangler/configuration/#sample-wranglertoml-configuration)
 
 ```shell
-npx wrangler pages download config <YOUR CLOUDFLARE PAGES PROJECT NAME>
+npx wrangler pages download config <PAGES PROJECT NAME>
 ```
 
 I'm not exactly sure why when you run the above command it returns the `database_name = "DB"`, but keep the binding name how you named it ( all the info should be in the terminal after you ran the `wrangler d1 create ...` command)
@@ -113,12 +118,12 @@ compatibility_date = "2024-08-23"
 [[env.preview.d1_databases]] # added env.preview.
 database_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
 binding = "DB"
-database_name = "db-preview-d1" # fixed the name 
+database_name = "db-preview-d1" # fixed the name
 
 [[d1_databases]] # removed env.production.
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 binding = "DB"
-database_name = "db-prod-d1" # fixed the name 
+database_name = "db-prod-d1" # fixed the name
 
 ```
 
@@ -159,11 +164,11 @@ Next you need to add this to the current vite.config.ts file in the root directo
 Just below the last import add the following to `vite.config.ts`
 
 ```typescript
-// vite.config.ts
+// ./vite.config.ts
 ... // don't add this dots existing code above , import pkg will be there also
 import pkg from "./package.json";
 
-// this is what you are adding
+// This is what you are adding
 let platform = {};
 
 console.log(process.env.NODE_ENV)
@@ -176,11 +181,13 @@ if (process.env.NODE_ENV === "development") {
 export default defineConfig(({ command, mode }): UserConfig => {
   return {
     plugins: [
-        qwikCity({platform}), // this is what was changed * added {platform} *
+        qwikCity({platform}), // This is what was changed * added {platform} *
         qwikVite(),
         tsconfigPaths()
         ],
 ... // don't add this dots ...leave existing code
+  },
+})
 ```
 
 That should be it for getting cloudflare environment setup and working with vite in dev mode.
@@ -237,10 +244,12 @@ export default LOCAL_DB_PATH
 
 ### Github Ignore `.gitignore`
 
-Now you need to create the `.drizzle.env` file here its being called .drizzle.env, which you will want to add to your `gitignore` while you are adding this to the `gitignore` file in the root of your projects directory you may also want to add `.wrangler` along with the `.drizzle.env`
+Now you need to create the `.drizzle.env` file here its being called `.drizzle.env`, which you will want to add to your `gitignore` while you are adding this to the `gitignore` file in the root of your projects directory you may also want to add `.wrangler` along with the `.drizzle.env`
+
+code: .gitignore
 
 ```shell
-# ./gitignore
+# ./.gitignore
 ... # don't add this dots, leave previous
 
 # Development
@@ -276,7 +285,7 @@ You should add the Environment variables somewhere safe, some of the variables a
 
 > Update the D1_ID values according to your preview and prod ID’s in the previous steps!
 
-package.json
+code: package.json
 
 ```json
 "scripts": {
@@ -292,6 +301,8 @@ package.json
 
 The above may need to be adjusted depending on what operating system you are using for example in Windows OS using powershell
 
+code: package.json
+
 ```json
 "scripts": {
   "db:generate": "drizzle-kit generate",
@@ -303,6 +314,16 @@ The above may need to be adjusted depending on what operating system you are usi
   "db:studio:prod": "powershell -Command \"$env:DB_ID='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'; $env:D1_TOKEN=(Get-Content .drizzle.env | Select-String 'D1_TOKEN=(.*)').Matches.Groups[1].Value; $env:CF_ACCOUNT_ID=(Get-Content .drizzle.env | Select-String 'CF_ACCOUNT_ID=(.*)').Matches.Groups[1].Value; drizzle-kit studio\""
 }
 ```
+
+### Database Directory `src/database`
+
+Next lets create a new directory in your `./src/` for your database, you can name this or place this where ever you want in your src folder. Here you can name it `database`, create the directory `./src/database/`
+
+> Keep in mind that in previous steps like in the [drizzle.config.ts](#drizzle.config.ts) files reference this directory so make the appropriate adjustments.
+
+Create your schema accordingly for your project, import and export it with a "splat" to the index.ts file you can now create in our `./src/database/` directory as follows.
+
+> Example schema provided in this Github Repo.
 
 ### Run Generate, Migrate, and Studio commands
 
@@ -325,14 +346,6 @@ npm run db:migrate:local
 ```shell
 npm run db:studio:local
 ```
-
-### Database Directory `src/database`
-
-Next lets create a new directory in your `./src/` for your database, you can name this or place this where ever you want in your src folder. Here you can name it `database`, create the directory `./src/database/`
-
-> Keep in mind that in previous steps like in the [drizzle.config.ts](#drizzle.config.ts) files reference this directory so make the appropriate adjustments.
-
-Create your schema accordingly for your project, import and export it with a "splat" to the index.ts file you can now create in our `./src/database/` directory as follows.
 
 ```typescript
 // ./src/database/index.ts
@@ -363,8 +376,6 @@ export async function initializeDbIfNeeded(
   }
 }
 ```
-
-> Example schema provided in this Github Repo.
 
 Create a middleware in the `./src/routes/` directory you can call it whatever you want but refer to the docs for order of invocation, based on naming (ABC order, etc...).
 
