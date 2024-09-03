@@ -118,12 +118,12 @@ compatibility_date = "2024-08-23"
 [[env.preview.d1_databases]] # added env.preview.
 database_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
 binding = "DB"
-database_name = "db-preview-d1" # fixed the name
+database_name = "d1-preview-db" # fixed the name
 
 [[d1_databases]] # removed env.production.
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 binding = "DB"
-database_name = "db-prod-d1" # fixed the name
+database_name = "d1-prod-db" # fixed the name
 
 ```
 

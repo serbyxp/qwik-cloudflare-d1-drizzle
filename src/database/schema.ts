@@ -1,22 +1,18 @@
 // src/schema.ts
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-
-export const linkShare = sqliteTable("linkShare", {
-  id: text("id").primaryKey().$defaultFn(crypto.randomUUID),
-  url: text("url").notNull(),
-  title: text("title").notNull(),
-  remark: text("remark"),
-  created: integer("created", {
-    mode: "timestamp_ms",
-  })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  modified: integer("modified", {
-    mode: "timestamp_ms",
-  })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  deleted: integer("deleted", {
-    mode: "timestamp_ms",
-  }),
-});
+export * from "./accounts/accounts.schema";
+export * from "./events/events.schema";
+export * from "./following/following.schema";
+export * from "./groups/groups.schema";
+export * from "./invites/invites.schema";
+export * from "./magic-links/magic-links.schema";
+export * from "./membership/membership.schema";
+export * from "./newsletters/newsletters.schema";
+export * from "./notifications/notifications.schema";
+export * from "./posts/posts.schema";
+export * from "./profiles/profiles.schema";
+export * from "./replies/replies.schema";
+export * from "./reset-tokens/reset-tokens.schema";
+export * from "./sessions/sessions.schema";
+export * from "./subscriptions/subscriptions.schema";
+export * from "./users/users.schema";
+export * from "./verify-email/verify-email.schema";
